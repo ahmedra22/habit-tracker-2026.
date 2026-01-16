@@ -1,83 +1,103 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Habit Tracker January 2026</title>
+    <title>Habit Tracker 2026</title>
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2c3e50">
 </head>
 
 <body>
 
-    <div class="controls">
-        <button onclick="window.print()">🖨️ طباعة الجدول</button>
-        <button class="reset" id="resetBtn">⚠️ مسح كل البيانات</button>
+    <div id="loginScreen" class="login-container">
+        <h1>Habit Tracker 2026 🚀</h1>
+        <p>سجل دخولك عشان تحفظ عاداتك وتتابع تقدمك</p>
+        <button id="loginBtn" class="btn btn-google">تسجيل الدخول بـ Google</button>
     </div>
 
-    <div class="page-container">
-        <div class="header">
-            <div class="date-info">
-                <div style="display: flex; gap: 20px;">
-                    <div>YEAR <br> MONTH</div>
-                    <div><strong>2026</strong> <br> <strong>January</strong></div>
-                </div>
+    <div id="appContainer" class="app-container hidden">
+
+        <div class="controls-bar">
+            <div class="user-info">
+                <img id="userPhoto" src="" alt="User">
+                <span id="userName">User</span>
             </div>
-            <div class="quote">Most people quit. Don't be most people.</div>
+
+            <div class="actions">
+                <button onclick="window.print()" class="btn btn-print">🖨️ طباعة</button>
+                <button id="logoutBtn" class="btn btn-logout">خروج</button>
+            </div>
         </div>
 
-        <table id="trackerTable">
-            <thead>
-                <tr class="row-header">
-                    <th class="col-habit">Habits</th>
-                </tr>
-            </thead>
-            <tbody id="habitsBody">
-            </tbody>
+        <div class="page-container">
+            <div class="header">
+                <div class="date-info">
+                    <div class="year-month-labels">YEAR <br> MONTH</div>
+                    <div class="year-month-values"><strong>2026</strong> <br> <strong>January</strong></div>
+                </div>
+                <div class="quote">Most people quit. Don't be most people.</div>
+            </div>
 
-            <tr style="height: 10px; border:none;">
-                <td colspan="32" style="border:none;"></td>
-            </tr>
+            <table id="trackerTable">
+                <thead>
+                    <tr class="row-header">
+                        <th class="col-habit">Habits</th>
+                    </tr>
+                </thead>
+                <tbody id="habitsBody"></tbody>
 
-            <tr class="row-header" id="countRow">
-                <td class="col-habit">No. of Habits Completed</td>
-            </tr>
-        </table>
+                <tr class="spacer-row">
+                    <td colspan="32"></td>
+                </tr>
 
-        <table id="performanceTable">
-            <thead>
-                <tr class="row-header" id="perfHeader">
-                    <th class="col-habit" style="text-align:right">Performance</th>
+                <tr class="row-header" id="countRow">
+                    <td class="col-habit">No. of Habits Completed</td>
                 </tr>
-            </thead>
-            <tbody>
-                <tr data-pct="100">
-                    <td class="col-habit">100% (7 habits)</td>
-                </tr>
-                <tr data-pct="85">
-                    <td class="col-habit">85% (6 habits)</td>
-                </tr>
-                <tr data-pct="70">
-                    <td class="col-habit">70% (5 habits)</td>
-                </tr>
-                <tr data-pct="55">
-                    <td class="col-habit">55% (4 habits)</td>
-                </tr>
-                <tr data-pct="40">
-                    <td class="col-habit">40% (3 habits)</td>
-                </tr>
-                <tr data-pct="25">
-                    <td class="col-habit">25% (2 habits)</td>
-                </tr>
-                <tr data-pct="10">
-                    <td class="col-habit">10% (1 habit)</td>
-                </tr>
-            </tbody>
-        </table>
+            </table>
+
+            <div class="chart-container">
+                <svg id="chartSvg"></svg>
+                <table id="performanceTable">
+                    <thead>
+                        <tr class="row-header" id="perfHeader">
+                            <th class="col-habit text-right">Performance</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr data-pct="100">
+                            <td class="col-habit">100% (7 habits)</td>
+                        </tr>
+                        <tr data-pct="85">
+                            <td class="col-habit">85% (6 habits)</td>
+                        </tr>
+                        <tr data-pct="70">
+                            <td class="col-habit">70% (5 habits)</td>
+                        </tr>
+                        <tr data-pct="55">
+                            <td class="col-habit">55% (4 habits)</td>
+                        </tr>
+                        <tr data-pct="40">
+                            <td class="col-habit">40% (3 habits)</td>
+                        </tr>
+                        <tr data-pct="25">
+                            <td class="col-habit">25% (2 habits)</td>
+                        </tr>
+                        <tr data-pct="10">
+                            <td class="col-habit">10% (1 habit)</td>
+                        </tr>
+                        <tr data-pct="0">
+                            <td class="col-habit">0% (0 habits)</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
-    <script src="script.js"></script>
+    <script type="module" src="script.js"></script>
 </body>
 
 </html>

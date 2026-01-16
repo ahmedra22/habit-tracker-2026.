@@ -1,117 +1,177 @@
-:root {
-    --primary-color: #2c3e50;
-    --accent-color: #27ae60;
-    --bg-color: #f5f5f5;
-    --border-color: #888;
-}
-
+/* --- إعدادات عامة --- */
 body {
-    font-family: 'Cairo', sans-serif;
-    background-color: var(--bg-color);
-    padding: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f0f2f5;
     margin: 0;
+    padding: 20px;
+    direction: ltr;
+    /* الجدول إنجليزي */
 }
 
-.controls {
+/* كلاس للإخفاء */
+.hidden {
+    display: none;
+}
+
+/* --- شاشة تسجيل الدخول --- */
+.login-container {
+    text-align: center;
+    margin-top: 15vh;
+    padding: 40px;
+    background: white;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.login-container h1 {
+    color: #2c3e50;
+    font-size: 2.5rem;
+    margin-bottom: 10px;
+}
+
+/* --- الأزرار --- */
+.btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.btn:active {
+    transform: scale(0.98);
+}
+
+.btn-google {
+    background-color: #4285F4;
+    color: white;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(66, 133, 244, 0.3);
+}
+
+.btn-print {
+    background-color: #e0e0e0;
+    color: #333;
+}
+
+.btn-logout {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* --- شريط التحكم العلوي --- */
+.controls-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+    background: white;
+    border-radius: 8px;
     margin-bottom: 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.user-info img {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    border: 2px solid #ddd;
+}
+
+.user-info span {
+    font-weight: bold;
+    color: #2c3e50;
+    font-size: 1.1rem;
+}
+
+.actions {
     display: flex;
     gap: 10px;
 }
 
-button {
-    padding: 10px 20px;
-    background-color: var(--primary-color);
-    color: white;
-    border: none;
-    cursor: pointer;
-    font-family: 'Cairo', sans-serif;
-    border-radius: 5px;
-    font-size: 16px;
-}
-
-button.reset {
-    background-color: #c0392b;
-}
-
-button:hover {
-    opacity: 0.9;
-}
-
+/* --- ورقة الجدول (A4) --- */
 .page-container {
     background: white;
     width: 297mm;
-    /* max-width: 100%; */
+    /* A4 Landscape width */
+    min-height: 210mm;
     padding: 10mm;
-    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
-    overflow-x: auto;
-    box-sizing: border-box;
+    margin: 0 auto;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
 /* Header Styles */
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: flex-end;
-    margin-bottom: 15px;
-    border-bottom: 2px solid #ddd;
+    align-items: center;
+    margin-bottom: 20px;
+    border-bottom: 2px solid #333;
     padding-bottom: 10px;
 }
 
-.date-info h1 {
-    font-size: 18px;
-    margin: 0;
+.date-info {
+    display: flex;
+    gap: 20px;
+    font-family: monospace;
+    font-size: 1.2rem;
 }
 
-.date-info h2 {
-    font-size: 24px;
-    margin: 0;
-    font-weight: bold;
+.year-month-labels {
+    text-align: right;
+    color: #666;
 }
 
 .quote {
-    font-family: 'Courier New', monospace;
     font-style: italic;
-    font-size: 18px;
-    color: #444;
+    color: #555;
+    font-family: serif;
 }
 
-/* Table Styles */
+/* --- الجداول --- */
 table {
     width: 100%;
     border-collapse: collapse;
-    font-size: 12px;
-    margin-bottom: 20px;
+    margin-bottom: 2px;
 }
 
 th,
 td {
-    border: 1px solid var(--border-color);
+    border: 1px solid #ccc;
     text-align: center;
-    height: 25px;
-    min-width: 20px;
-    padding: 0;
+    padding: 4px;
+    font-size: 0.9rem;
 }
 
+/* Habits Column */
 .col-habit {
-    width: 180px;
-    text-align: right;
-    padding-right: 10px;
-    font-weight: 600;
-    font-size: 14px;
-}
-
-.row-header {
-    background-color: #e0e0e0;
+    width: 200px;
+    text-align: left;
+    padding-left: 10px;
     font-weight: bold;
+    background: #f9f9f9;
 }
 
-/* Interactive Checkbox */
+/* Header Row */
+.row-header th {
+    background: #eee;
+    height: 40px;
+}
+
+/* Check Cells */
 .check-cell {
     cursor: pointer;
-    transition: background-color 0.2s;
+    transition: background 0.1s;
 }
 
 .check-cell:hover {
@@ -119,62 +179,96 @@ td {
 }
 
 .check-cell.completed {
-    background-color: var(--accent-color) !important;
-    color: white;
+    background-color: #2ecc71;
+    /* لون الإنجاز الأخضر */
+    position: relative;
 }
 
+/* علامة الصح */
 .check-cell.completed::after {
-    content: '✓';
-    font-size: 14px;
-    font-weight: bold;
+    content: '✔';
+    color: white;
+    font-size: 1.2rem;
 }
 
-/* Performance Dots */
+.spacer-row td {
+    border: none;
+    height: 10px;
+}
+
+.text-right {
+    text-align: right;
+}
+
+/* --- الرسم البياني (Chart Overlay) --- */
+.chart-container {
+    position: relative;
+    width: 100%;
+    margin-top: 10px;
+}
+
+#chartSvg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.chart-line {
+    fill: none;
+    stroke: #3498db;
+    /* لون الخط أزرق */
+    stroke-width: 3px;
+    stroke-linejoin: round;
+    stroke-linecap: round;
+    filter: drop-shadow(0px 2px 2px rgba(0, 0, 0, 0.2));
+}
+
+#performanceTable {
+    position: relative;
+    z-index: 1;
+    background: transparent;
+}
+
+/* خلايا الأداء */
+.perf-cell {
+    position: relative;
+    height: 25px;
+}
+
 .perf-dot {
-    width: 8px;
-    height: 8px;
-    background-color: #ccc;
+    width: 6px;
+    height: 6px;
+    background: #ccc;
     border-radius: 50%;
-    display: inline-block;
+    margin: 0 auto;
+    opacity: 0.3;
 }
 
 .perf-cell.active .perf-dot {
-    background-color: var(--primary-color);
+    background: #3498db;
+    opacity: 1;
     transform: scale(1.5);
 }
 
-/* إعدادات الطباعة */
+/* --- الطباعة --- */
 @media print {
     body {
-        background: none;
+        background: white;
         padding: 0;
-        margin: 0;
     }
 
-    .controls {
-        display: none;
+    .login-container,
+    .controls-bar {
+        display: none !important;
     }
 
     .page-container {
         box-shadow: none;
         margin: 0;
         width: 100%;
-        max-width: none;
-        padding: 0;
-    }
-
-    @page {
-        size: A4 landscape;
-        margin: 10mm;
-    }
-
-    /* توفير الحبر */
-    .check-cell.completed {
-        background-color: #ddd !important;
-        color: black;
-    }
-
-    .check-cell.completed::after {
-        color: black;
     }
 }
