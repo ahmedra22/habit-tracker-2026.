@@ -680,3 +680,93 @@ tr[id="countRow"] td {
         transform: translateY(0);
     }
 }
+/* =========================================
+   📱 تحسينات الموبايل (Mobile Responsiveness)
+   ========================================= */
+
+@media screen and (max-width: 768px) {
+    
+    /* 1. تظبيط جسم الصفحة */
+    body {
+        padding: 0;
+        margin: 0;
+        overflow-x: hidden; /* يمنع الصفحة كلها تتحرك يمين وشمال */
+    }
+
+    .app-container {
+        width: 100%;
+        padding: 5px;
+        overflow-x: hidden;
+    }
+
+    .page-container {
+        width: 100% !important;
+        margin: 0 !important;
+        padding: 10px !important;
+        box-shadow: none;
+        border-radius: 0;
+    }
+
+    /* 2. تظبيط الهيدر والزراير (يترصوا تحت بعض) */
+    .controls-bar .actions {
+        flex-wrap: wrap;
+        gap: 5px;
+    }
+    
+    .header-content {
+        flex-direction: column-reverse; /* نخلي العنوان فوق والبروفايل تحته */
+        text-align: center;
+        gap: 15px;
+    }
+
+    .title-section {
+        text-align: center;
+        width: 100%;
+    }
+
+    .user-profile-section {
+        justify-content: center;
+        width: 100%;
+    }
+
+    /* 3. 🔥 سحر الجدول (أهم جزء) 🔥 */
+    .table-wrapper {
+        display: block;
+        width: 100%;
+        overflow-x: auto; /* يسمح بالسحب الأفقي للجدول بس */
+        -webkit-overflow-scrolling: touch; /* نعومة السحب في الآيفون */
+        margin-bottom: 20px;
+        border: 1px solid #eee;
+        border-radius: 8px;
+    }
+
+    table {
+        width: max-content; /* الجدول ياخد راحته في العرض */
+        min-width: 100%;
+    }
+
+    /* 4. تثبيت عمود "أسماء العادات" وأنت بتسحب (Sticky Column) */
+    .col-habit {
+        position: sticky;
+        left: 0;
+        background-color: #fff;
+        z-index: 10;
+        border-right: 2px solid #ddd; /* خط يفصل الاسماء عن الأيام */
+        width: 110px; /* عرض ثابت للاسماء */
+        font-size: 12px;
+        padding: 5px;
+    }
+
+    /* تظبيط مربعات الأيام */
+    th, td {
+        padding: 4px;
+        font-size: 11px;
+        min-width: 35px; /* عشان المربعات متبقاش لازقة */
+    }
+
+    /* 5. تظبيط المودال (الكارت المنبثق) */
+    .modal-content {
+        width: 85%;
+        margin: 30% auto;
+    }
+}
