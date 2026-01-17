@@ -1,5 +1,6 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+// 👇 ضفنا هنا setPersistence و browserLocalPersistence
+import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
 // --- إعدادات فايربيز ---
@@ -16,6 +17,18 @@ const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
+
+// 🔥🔥🔥 السطر السحري: إجبار المتصفح على حفظ تسجيل الدخول 🔥🔥🔥
+setPersistence(auth, browserLocalPersistence)
+    .then(() => {
+        // تم تفعيل الحفظ بنجاح
+        console.log("Session persistence enabled: LOCAL");
+    })
+    .catch((error) => {
+        console.error("Persistence error:", error);
+    });
+
+// ... (كمل باقي الكود زي ما هو من غير تغيير)
 
 // --- 🔥 جمل التحفيز 🔥 ---
 const motivationQuotes = [
