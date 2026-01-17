@@ -14,7 +14,14 @@
 <body>
 
     <div id="loginScreen" class="login-container">
-        <h1>Habit Tracker 2026 (V4) 🔥</h1>
+        <div class="dev-login-profile">
+            <img src="me.jpg" alt="Ahmed Ramadan" class="login-dev-pic">
+            <h3 class="login-dev-name">Ahmed Ramadan</h3>
+            <p class="login-dev-title">Full Stack Developer</p>
+        </div>
+        <hr style="border: 0; border-top: 1px solid #eee; margin: 20px 0;">
+    
+        <h1>Habit Tracker 2026 V6 🔥</h1>
         <p>سجل دخولك عشان تحفظ عاداتك وتتابع تقدمك</p>
         <button id="loginBtn" class="btn btn-google">تسجيل الدخول بـ Google</button>
     </div>
@@ -22,90 +29,144 @@
     <div id="appContainer" class="app-container hidden">
 
         <div class="controls-bar">
-            <div class="user-info">
-                <img id="userPhoto" src="" alt="User">
-                <span id="userName">User</span>
-            </div>
-
-            <div class="actions">
+            <div class="actions" style="width: 100%; justify-content: center;">
+                <select id="monthSelector" class="btn" style="background: white; border: 1px solid #ccc;">
+                    <option value="0">January</option>
+                    <option value="1">February</option>
+                    <option value="2">March</option>
+                    <option value="3">April</option>
+                    <option value="4">May</option>
+                    <option value="5">June</option>
+                    <option value="6">July</option>
+                    <option value="7">August</option>
+                    <option value="8">September</option>
+                    <option value="9">October</option>
+                    <option value="10">November</option>
+                    <option value="11">December</option>
+                </select>
                 <button onclick="window.print()" class="btn btn-print">🖨️ طباعة</button>
+                <button id="editHabitsBtn" class="btn" style="background-color: #f1c40f; color: #333;">⚙️ تعديل</button>
                 <button id="logoutBtn" class="btn btn-logout">خروج</button>
-                <button id="editHabitsBtn" class="btn" style="background-color: #f1c40f; color: #333;">⚙️ تعديل العادات</button>
             </div>
         </div>
 
         <div class="page-container">
-            <div class="header">
-                <div class="date-info">
-                    <div class="year-month-labels">YEAR <br> MONTH</div>
-                    <div class="year-month-values"><strong>2026</strong> <br> <strong>January</strong></div>
+
+            <div class="header-content">
+                <div class="user-profile-section">
+                    <img id="userPhoto" src="https://via.placeholder.com/50" alt="Profile" class="profile-pic">
+                    <div class="user-info">
+                        <span class="welcome-text">Welcome,</span>
+                        <span id="userName" class="user-name-text">Guest</span>
+                    </div>
                 </div>
-                <div class="quote">Most people quit. Don't be most people.</div>
+
+                <div class="title-section">
+                    <h1>Habit Tracker 2026</h1>
+                    <div class="year-month-values" style="font-size: 14px; color: #666; margin-top: 5px;">
+                        <strong>2026</strong> | <strong>January</strong>
+                    </div>
+                </div>
             </div>
 
-            <table id="trackerTable">
-                <thead>
-                    <tr class="row-header">
-                        <th class="col-habit">Habits</th>
-                    </tr>
-                </thead>
-                <tbody id="habitsBody"></tbody>
+            <div class="quote" style="text-align: center; margin-bottom: 15px; font-style: italic; color: #888;">
+                "Most people quit. Don't be most people."
+            </div>
 
-                <tr class="spacer-row">
-                    <td colspan="32"></td>
-                </tr>
-
-                <tr class="row-header" id="countRow">
-                    <td class="col-habit">No. of Habits Completed</td>
-                </tr>
-            </table>
-
-            <div class="chart-container">
-                <svg id="chartSvg"></svg>
-                <table id="performanceTable">
+            <div class="table-wrapper">
+                <table id="trackerTable">
                     <thead>
-                        <tr class="row-header" id="perfHeader">
-                            <th class="col-habit text-right">Performance</th>
+                        <tr class="row-header">
+                            <th class="col-habit">Habits</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        <tr data-pct="100">
-                            <td class="col-habit">100%</td>
-                        </tr>
-                        <tr data-pct="85">
-                            <td class="col-habit">85%</td>
-                        </tr>
-                        <tr data-pct="70">
-                            <td class="col-habit">70%</td>
-                        </tr>
-                        <tr data-pct="55">
-                            <td class="col-habit">55%</td>
-                        </tr>
-                        <tr data-pct="40">
-                            <td class="col-habit">40%</td>
-                        </tr>
-                        <tr data-pct="25">
-                            <td class="col-habit">25%</td>
-                        </tr>
-                        <tr data-pct="10">
-                            <td class="col-habit">10%</td>
-                        </tr>
-                        <tr data-pct="0">
-                            <td class="col-habit">0%</td>
-                        </tr>
-                    </tbody>
+                    <tbody id="habitsBody"></tbody>
+
+                    <tr class="spacer-row">
+                        <td colspan="32"></td>
+                    </tr>
+
+                    <tr class="row-header" id="countRow">
+                        <td class="col-habit">No. of Habits Completed</td>
+                    </tr>
                 </table>
             </div>
+
+            <div class="table-wrapper">
+                <div class="chart-container">
+                    <svg id="chartSvg"></svg>
+                    <table id="performanceTable">
+                        <thead>
+                            <tr class="row-header" id="perfHeader">
+                                <th class="col-habit text-right">Performance</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr data-pct="100">
+                                <td class="col-habit">100%</td>
+                            </tr>
+                            <tr data-pct="85">
+                                <td class="col-habit">85%</td>
+                            </tr>
+                            <tr data-pct="70">
+                                <td class="col-habit">70%</td>
+                            </tr>
+                            <tr data-pct="55">
+                                <td class="col-habit">55%</td>
+                            </tr>
+                            <tr data-pct="40">
+                                <td class="col-habit">40%</td>
+                            </tr>
+                            <tr data-pct="25">
+                                <td class="col-habit">25%</td>
+                            </tr>
+                            <tr data-pct="10">
+                                <td class="col-habit">10%</td>
+                            </tr>
+                            <tr data-pct="0">
+                                <td class="col-habit">0%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div id="monthScore" class="month-score-card">Monthly Score: 0%</div>
         </div>
+
+        <footer class="footer-credit">
+            <p>Developed with <span style="color: #e25555;">&hearts;</span> by <a href="javascript:void(0)"
+                    onclick="openProfileModal()" class="dev-name">Ahmed Ramadan</a> © 2026</p>
+        </footer>
+
     </div>
 
-    <script type="module" src="script.js?v=4"></script>
+    <script type="module" src="script.js?v=6"></script>
     <script>
         if ('serviceWorker' in navigator) {
             navigator.serviceWorker.register('sw.js')
                 .then(() => console.log("Service Worker Registered ✅"));
         }
     </script>
+    <div id="toast" class="toast">رسالة التنبيه هنا</div>
+    <div id="profileModal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeProfileModal()">&times;</span>
+    
+            <img src="me.jpg" alt="Ahmed" class="modal-pic">
+            <h3>Ahmed Ramadan</h3>
+            <p class="modal-job">Full Stack Developer 💻</p>
+    
+            <div class="social-buttons">
+                <a href="https://www.facebook.com/ahmed.ramadan.393457" target="_blank" class="social-btn facebook">
+                    Facebook 🔵
+                </a>
+                <a href="https://www.instagram.com/a7med__.ramadan/?__pwa=1" target="_blank" class="social-btn instagram">
+                    Instagram 📸
+                </a>
+            </div>
+        </div>
+    </div>
 </body>
 
 </html>

@@ -1,88 +1,92 @@
-// --- 1. استيراد مكتبات فايربيز (Imports) ---
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
 import { getFirestore, doc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
 
-// ==================================================================
-// 🔥🔥 منطقة المفاتيح (مفاتيحك الخاصة موجودة هنا) 🔥🔥
+// --- إعدادات فايربيز ---
 const firebaseConfig = {
-  apiKey: "AIzaSyA3Z9TUhNCqNR0PNosXLVT_TkTaZxIy-h8",
-  authDomain: "habit-tracker-2026-c5d50.firebaseapp.com",
-  projectId: "habit-tracker-2026-c5d50",
-  storageBucket: "habit-tracker-2026-c5d50.firebasestorage.app",
-  messagingSenderId: "424349537327",
-  appId: "1:424349537327:web:ee63fdb204fb97b43022da",
-  measurementId: "G-H64DTWQP50"
+    apiKey: "AIzaSyA3Z9TUhNCqNR0PNosXLVT_TkTaZxIy-h8",
+    authDomain: "habit-tracker-2026-c5d50.firebaseapp.com",
+    projectId: "habit-tracker-2026-c5d50",
+    storageBucket: "habit-tracker-2026-c5d50.firebasestorage.app",
+    messagingSenderId: "424349537327",
+    appId: "1:424349537327:web:ee63fdb204fb97b43022da"
 };
-// ==================================================================
 
-// --- 2. تشغيل فايربيز (Initialization) ---
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// --- 3. المتغيرات وإعدادات الجدول ---
-let currentUser = null;
-
-// 🔥 خلينا العادات (let) مش (const) عشان نقدر نغيرها
-// دي العادات الافتراضية اللي بتظهر لأول مرة بس
-let habits = [
-    "عادة 1 (اضغط تعديل)", "عادة 2", "عادة 3",
-    "عادة 4", "عادة 5", "عادة 6", "عادة 7"
+// --- 🔥 1. قائمة التحفيز العشوائية (8 جمل نار) 🔥 ---
+const motivationQuotes = [
+    "عاش يا وحش! خطوة كمان ناحية حلمك 🚀",
+    "الله عليك! هو ده الالتزام اللي بيصنع المعجزات 💪",
+    "وحش! استمر وكمل دوس، مفيش حاجة هتوقفك 🔥",
+    "مجهود عظيم.. النسخة الأفضل منك بتتشكل دلوقتي 💎",
+    "صدقني، التعب ده هيروح وهيفضل الإنجاز.. كمل! 🌟",
+    "جامد! كل علامة صح بتقربك خطوة للقمة 🏔️",
+    "الله ينور! انت قد التحدي وأقوى من أي كسل ⚡",
+    "فخور بيك! الاستمرارية هي سر النجاح.. متوقفش! 🏆"
 ];
 
-const totalDays = 31;
-const startDayIndex = 4; // 1 Jan 2026 is Thursday
+// --- المتغيرات ---
+let currentUser = null;
+const year = new Date().getFullYear(); 
+let currentMonth = new Date().getMonth();
+const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
-// --- 4. التحكم في الشاشات (Auth Logic) ---
+let habits = [
+    "🕌 الصلاة في وقتها", "📖 ورد القرآن", "💻 تعلم JavaScript",
+    "🗣️ ممارسة English", "⚖️ مذاكرة الكلية", "🏋️ الجيم / رياضة", "🚫 تشتت وسوشيال"
+];
+
+// --- العناصر ---
 const loginScreen = document.getElementById('loginScreen');
 const appContainer = document.getElementById('appContainer');
-const userPhoto = document.getElementById('userPhoto');
-const userName = document.getElementById('userName');
-
-// زرار تسجيل الدخول
-const loginBtn = document.getElementById('loginBtn');
-if(loginBtn) {
-    loginBtn.addEventListener('click', () => {
-        signInWithPopup(auth, provider)
-            .then((result) => console.log("Logged in"))
-            .catch((error) => console.error("Login Error:", error));
-    });
-}
-
-// زرار الخروج
-const logoutBtn = document.getElementById('logoutBtn');
-if(logoutBtn) {
-    logoutBtn.addEventListener('click', () => {
-        signOut(auth).then(() => location.reload());
-    });
-}
-
-// 🔥 زرار تعديل العادات (الجديد)
+const monthSelector = document.getElementById('monthSelector');
 const editHabitsBtn = document.getElementById('editHabitsBtn');
-if(editHabitsBtn) {
-    editHabitsBtn.addEventListener('click', toggleEditMode);
+const loginBtn = document.getElementById('loginBtn');
+const logoutBtn = document.getElementById('logoutBtn');
+const toastElement = document.getElementById('toast');
+const monthScoreElement = document.getElementById('monthScore');
+
+// --- التحكم ---
+if(loginBtn) loginBtn.addEventListener('click', () => signInWithPopup(auth, provider));
+if(logoutBtn) logoutBtn.addEventListener('click', () => signOut(auth).then(() => location.reload()));
+if(editHabitsBtn) editHabitsBtn.addEventListener('click', () => toggleEditMode());
+
+if(monthSelector) {
+    monthSelector.value = currentMonth;
+    monthSelector.addEventListener('change', (e) => {
+        currentMonth = parseInt(e.target.value);
+        updateDateHeader();
+        listenToDatabase();
+    });
 }
 
-// مراقب حالة المستخدم
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
-        // إظهار التطبيق
         if(loginScreen) loginScreen.style.display = 'none';
         if(appContainer) {
              appContainer.style.display = 'block';
              appContainer.classList.remove('hidden'); 
         }
+        if(document.getElementById('userPhoto')) document.getElementById('userPhoto').src = user.photoURL;
         
-        // عرض البيانات
-        if(userPhoto) userPhoto.src = user.photoURL;
-        if(userName) userName.textContent = user.displayName ? user.displayName.split(' ')[0] : 'User';
+        // جلب الاسم الأول
+        const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
+        if(document.getElementById('userName')) document.getElementById('userName').textContent = firstName;
         
-        setTimeout(() => initApp(), 100);
+        // --- 🔥 2. رسالة الترحيب عند الدخول 🔥 ---
+        // بنعمل Timeout صغير عشان تظهر بعد ما الموقع يحمل
+        setTimeout(() => {
+            showToast(`نورت بيتك يا ${firstName}.. يلا نكسر الدنيا! 👋🚀`);
+        }, 1500);
 
+        updateDateHeader();
+        initApp();
     } else {
         currentUser = null;
         if(loginScreen) loginScreen.style.display = 'block';
@@ -90,239 +94,324 @@ onAuthStateChanged(auth, (user) => {
     }
 });
 
-// --- 5. منطق التطبيق (App Logic) ---
+// --- الدوال الأساسية ---
+
+// دالة التنبيه (Toast)
+function showToast(message) {
+    toastElement.textContent = message;
+    toastElement.className = "toast show";
+    setTimeout(() => toastElement.className = toastElement.className.replace("show", ""), 4000); // خليتها 4 ثواني عشان يلحق يقرأ
+}
+
+function updateDateHeader() {
+    const monthLabel = document.querySelector('.year-month-values strong:last-child');
+    if(monthLabel) monthLabel.textContent = monthNames[currentMonth];
+    const yearLabel = document.querySelector('.year-month-values strong:first-child');
+    if(yearLabel) yearLabel.textContent = year;
+}
 
 function initApp() {
-    listenToDatabase();  // بنسمع للداتا الأول عشان نجيب الأسماء والتشيكات
+    listenToDatabase();
     window.addEventListener('resize', drawChart);
 }
 
-// دالة بناء الجدول
 function buildTableStructure() {
     const tbody = document.getElementById('habitsBody');
     if(!tbody) return;
     tbody.innerHTML = ''; 
     
-    // ضبط الهيدر
+    const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
     const headerRow = document.querySelector('#trackerTable thead tr');
     const perfHeaderRow = document.querySelector('#performanceTable thead tr');
     
-    // مسح القديم
     while (headerRow.children.length > 1) headerRow.removeChild(headerRow.lastChild);
     while (perfHeaderRow.children.length > 1) perfHeaderRow.removeChild(perfHeaderRow.lastChild);
     
-    // إضافة الأيام
-    for (let i = 1; i <= totalDays; i++) {
-        let dayName = weekDays[(startDayIndex + i - 1) % 7];
-        const thContent = `<th>${i}<br>${dayName}</th>`;
+    const now = new Date();
+    now.setHours(0, 0, 0, 0);
+
+    const todayDay = new Date().getDate();
+    const isCurrentMonth = new Date().getMonth() === currentMonth;
+    const isCurrentYear = new Date().getFullYear() === year;
+
+    for (let i = 1; i <= daysInMonth; i++) {
+        const date = new Date(year, currentMonth, i);
+        const dayName = weekDays[date.getDay()];
+        const isToday = isCurrentYear && isCurrentMonth && (i === todayDay);
+        const highlightClass = isToday ? 'today-col' : ''; 
+
+        const thContent = `<th class="${highlightClass}">${i}<br>${dayName}</th>`;
         headerRow.insertAdjacentHTML('beforeend', thContent);
         perfHeaderRow.insertAdjacentHTML('beforeend', thContent);
     }
     
-    // رسم صفوف العادات
     const countRow = document.getElementById('countRow');
     while (countRow.children.length > 1) countRow.removeChild(countRow.lastChild);
 
     habits.forEach((habit, hIndex) => {
         let tr = document.createElement('tr');
-        
-        // 🔥 التغيير هنا: ضفنا ID للخلية عشان نعرف نغير الكلام اللي جواها
         tr.innerHTML = `<td class="col-habit" id="habit-name-${hIndex}">${habit}</td>`;
         
-        for (let d = 1; d <= totalDays; d++) {
+        for (let d = 1; d <= daysInMonth; d++) {
             let td = document.createElement('td');
             td.className = 'check-cell';
             td.dataset.h = hIndex;
             td.dataset.d = d;
-            
-            // عند الضغط
-            td.addEventListener('click', function() {
-                // ممنوع التعليم لو إحنا في وضع التعديل (زرار الحفظ ظاهر)
-                if(editHabitsBtn && editHabitsBtn.textContent.includes("حفظ")) return;
 
-                this.classList.toggle('completed');
-                saveDataToFirebase(); // حفظ شامل
-            });
+            const cellDate = new Date(year, currentMonth, d);
+            const isFuture = cellDate > now;
+
+            if (isToday(d)) td.classList.add('today-col');
+            
+            if (isFuture) {
+                td.classList.add('future-cell');
+                td.addEventListener('click', function() {
+                    showToast("لسه بدري يا بطل! اليوم ده لسه مجاش ⏳🚫");
+                });
+            } else {
+                td.addEventListener('click', function() {
+                    if(editHabitsBtn && editHabitsBtn.textContent.includes("حفظ")) return;
+
+                    // لو اليوم عدى ولسه بيعلم عليه (تشجيع خفيف)
+                    if (!this.classList.contains('completed') && !isToday(d)) {
+                         showToast("اليوم ده عدى، بس ولا يهمك! العوض في الجاي 💪");
+                    }
+
+                    // --- 🔥 3. اللوجيك الجديد: تحفيز عند إنجاز اليوم الحالي 🔥 ---
+                    // الشرط: يكون يوم النهاردة + يكون بيعلم صح (مش بيشيل العلامة)
+                    if (!this.classList.contains('completed') && isToday(d)) {
+                        // اختيار جملة عشوائية من الـ 8 جمل
+                        const randomIndex = Math.floor(Math.random() * motivationQuotes.length);
+                        const randomQuote = motivationQuotes[randomIndex];
+                        showToast(randomQuote);
+                    }
+
+                    this.classList.toggle('completed');
+                    saveDataToFirebase();
+                });
+            }
             tr.appendChild(td);
         }
         tbody.appendChild(tr);
     });
 
-    // صف العداد
-    for (let d = 1; d <= totalDays; d++) {
+    for (let d = 1; d <= daysInMonth; d++) {
         let td = document.createElement('td');
         td.id = `count-${d}`;
-        td.innerText = '0';
+        td.innerText = `0/${habits.length}`;
+        if (isToday(d)) td.classList.add('today-col');
         countRow.appendChild(td);
     }
 
-    // شبكة الرسم البياني
     const perfRows = document.querySelectorAll('#performanceTable tbody tr');
     perfRows.forEach(row => {
         while (row.children.length > 1) row.removeChild(row.lastChild);
-        for (let d = 1; d <= totalDays; d++) {
+        for (let d = 1; d <= daysInMonth; d++) {
             let td = document.createElement('td');
             td.className = 'perf-cell';
             td.id = `perf-${row.dataset.pct}-${d}`;
+            if (isToday(d)) td.classList.add('today-col');
             td.innerHTML = '<div class="perf-dot"></div>';
             row.appendChild(td);
         }
     });
 }
 
-// دالة الاستماع للداتا (Realtime)
+function isToday(day) {
+    return (new Date().getFullYear() === year) && 
+           (new Date().getMonth() === currentMonth) && 
+           (new Date().getDate() === day);
+}
+
 function listenToDatabase() {
     if (!currentUser) return;
-
     onSnapshot(doc(db, "users", currentUser.uid), (docSnapshot) => {
         if (docSnapshot.exists()) {
             const data = docSnapshot.data();
+            if (data.habitNames && data.habitNames.length > 0) habits = data.habitNames;
             
-            // 🔥 أهم حتة: لو المستخدم مسيف أسماء عادات، بنستخدمها
-            if (data.habitNames && data.habitNames.length > 0) {
-                habits = data.habitNames;
-            }
-            
-            // نبني الجدول بالأسماء (سواء الجديدة أو القديمة)
             buildTableStructure();
             
-            // نحط علامات الصح
-            const habitsData = data.habits || [];
-            applyDataToUI(habitsData);
+            const monthKey = `habits_m_${currentMonth}`;
+            const currentMonthChecks = data[monthKey] || [];
+            applyDataToUI(currentMonthChecks);
         } else {
-            // مستخدم جديد (مفيش داتا لسه)
             buildTableStructure();
         }
     });
 }
 
-// دالة تحديث الواجهة بالداتا
 function applyDataToUI(savedHabits) {
-    // 1. تصفير
     document.querySelectorAll('.check-cell').forEach(cell => cell.classList.remove('completed'));
-
-    // 2. تلوين
+    
     savedHabits.forEach(id => {
         const [h, d] = id.split('-');
-        const cell = document.querySelector(`.check-cell[data-h="${h}"][data-d="${d}"]`);
-        if (cell) cell.classList.add('completed');
+        if (h < habits.length) {
+            const cell = document.querySelector(`.check-cell[data-h="${h}"][data-d="${d}"]`);
+            if (cell) cell.classList.add('completed');
+        }
     });
 
-    // 3. تحديث الحسابات والرسم
-    for (let d = 1; d <= totalDays; d++) {
+    const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
         updateStats(d);
     }
     
-    // رسم الخط
+    calculateMonthlyScore(savedHabits.length);
     setTimeout(drawChart, 50);
 }
 
-// 🔥 دالة الحفظ الشاملة (للأسماء والعلامات)
+function calculateMonthlyScore(totalChecks) {
+    const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+    const totalPossibleChecks = daysInMonth * habits.length;
+    let percentage = 0;
+    if(totalPossibleChecks > 0) {
+        percentage = Math.round((totalChecks / totalPossibleChecks) * 100);
+    }
+    if(monthScoreElement) {
+        monthScoreElement.textContent = `Monthly Score: ${percentage}% 🚀`;
+        if(percentage >= 80) monthScoreElement.style.background = "linear-gradient(135deg, #2ecc71 0%, #27ae60 100%)";
+        else if(percentage >= 50) monthScoreElement.style.background = "linear-gradient(135deg, #f1c40f 0%, #f39c12 100%)";
+        else monthScoreElement.style.background = "linear-gradient(135deg, #e74c3c 0%, #c0392b 100%)";
+    }
+}
+
 async function saveDataToFirebase() {
     if (!currentUser) return;
-
-    // تجميع العلامات (الصح)
     const currentChecks = [];
     document.querySelectorAll('.check-cell.completed').forEach(cell => {
         currentChecks.push(`${cell.dataset.h}-${cell.dataset.d}`);
     });
-
+    const monthKey = `habits_m_${currentMonth}`;
     try {
         await setDoc(doc(db, "users", currentUser.uid), {
-            habits: currentChecks,      // العلامات
-            habitNames: habits,         // 🔥 حفظ أسماء العادات الحالية كمان
+            [monthKey]: currentChecks,
             last_updated: new Date()
         }, { merge: true });
-    } catch (error) {
-        console.error("Save failed:", error);
-    }
+        calculateMonthlyScore(currentChecks.length); 
+    } catch (error) { console.error("Save error:", error); }
 }
 
-// 🔥 دالة وضع التعديل (لما تدوس على الزرار)
-function toggleEditMode() {
+async function saveNamesToFirebase(newNames) {
+    if (!currentUser) return;
+    try {
+        await setDoc(doc(db, "users", currentUser.uid), { habitNames: newNames }, { merge: true });
+    } catch (error) { console.error("Save names error:", error); }
+}
+
+// دوال التعديل
+window.addNewHabit = function() {
+    const inputs = document.querySelectorAll('.habit-input');
+    const currentValues = Array.from(inputs).map(i => i.value);
+    currentValues.push("New Habit ✏️");
+    habits = currentValues;
+    toggleEditMode(true);
+};
+
+window.removeLastHabit = function() {
+    const inputs = document.querySelectorAll('.habit-input');
+    const currentValues = Array.from(inputs).map(i => i.value);
+    if(currentValues.length > 1) {
+        currentValues.pop();
+        habits = currentValues;
+        toggleEditMode(true);
+    } else {
+        showToast("لازم يكون فيه عادة واحدة على الأقل!");
+    }
+};
+
+function toggleEditMode(forceRefresh = false) {
     const btn = document.getElementById('editHabitsBtn');
     if(!btn) return;
-
-    // بنعرف إحنا في وضع التعديل ولا لأ من كلمة "حفظ"
     const isEditing = btn.textContent.includes("حفظ");
-
-    if (!isEditing) {
-        // 🟢 (1) لو مش بنعدل -> افتح التعديل
-        btn.textContent = "💾 حفظ التعديلات";
-        btn.style.backgroundColor = "#2ecc71"; // لون أخضر
-        btn.style.color = "white";
-
-        // حول النصوص لمربعات كتابة
-        habits.forEach((habit, index) => {
-            const cell = document.getElementById(`habit-name-${index}`);
-            if(cell) {
-                const oldText = cell.innerText;
-                cell.innerHTML = `<input type="text" id="input-habit-${index}" value="${oldText}" style="width: 90%; padding: 5px; font-family: inherit;">`;
-            }
-        });
-
+    if (isEditing && forceRefresh !== true) {
+        finishEditing(btn);
     } else {
-        // 🔴 (2) لو بنعدل -> احفظ واقفل
-        btn.textContent = "⚙️ تعديل العادات";
-        btn.style.backgroundColor = "#f1c40f"; // رجوع للون الأصفر
-        btn.style.color = "#333";
-
-        // لم الأسماء الجديدة من المربعات
-        const newHabits = [];
-        for(let i=0; i<habits.length; i++) {
-            const input = document.getElementById(`input-habit-${i}`);
-            if(input) {
-                newHabits.push(input.value);
-            } else {
-                newHabits.push(habits[i]); // لو ملقيناش انبت، خد القديم
-            }
-        }
-
-        // حدث المتغير الرئيسي واحفظ في فايربيز
-        habits = newHabits;
-        saveDataToFirebase(); 
-        // الدالة دي هتحفظ وتبعت لفايربيز، وفايربيز هيرد علينا في listenToDatabase والجدول هيترسم تاني لوحده
+        startEditing(btn);
     }
 }
 
-// --- 6. دوال الرسم والحسابات ---
+function startEditing(btn) {
+    btn.textContent = "💾 حفظ التعديلات";
+    btn.style.backgroundColor = "#2ecc71";
+    btn.style.color = "white";
+    let controlsDiv = document.getElementById('habitControls');
+    if(!controlsDiv) {
+        controlsDiv = document.createElement('div');
+        controlsDiv.id = 'habitControls';
+        controlsDiv.style.display = 'inline-block';
+        controlsDiv.innerHTML = `
+            <button onclick="window.addNewHabit()" class="habit-control-btn btn-add">+ زود عادة</button>
+            <button onclick="window.removeLastHabit()" class="habit-control-btn btn-remove">- امسح</button>
+        `;
+        btn.parentNode.insertBefore(controlsDiv, btn.nextSibling);
+    } else {
+        controlsDiv.style.display = 'inline-block';
+    }
+    const tbody = document.getElementById('habitsBody');
+    tbody.innerHTML = ''; 
+    habits.forEach((habit, index) => {
+        let tr = document.createElement('tr');
+        tr.innerHTML = `<td class="col-habit"><input type="text" class="habit-input" value="${habit}" style="width: 90%; padding: 5px;"></td>`;
+        for(let d=1; d<=1; d++) { 
+             let td = document.createElement('td'); 
+             td.colSpan = 31; 
+             td.style.background = "#f0f0f0";
+             td.innerText = " (اضغط حفظ لتفعيل الجدول) ";
+             tr.appendChild(td);
+        }
+        tbody.appendChild(tr);
+    });
+}
+
+function finishEditing(btn) {
+    const inputs = document.querySelectorAll('.habit-input');
+    const newHabits = [];
+    inputs.forEach(input => {
+        if(input.value.trim() !== "") newHabits.push(input.value);
+    });
+    if (newHabits.length === 0) newHabits.push("New Habit");
+    habits = newHabits;
+    btn.textContent = "⚙️ تعديل العادات";
+    btn.style.backgroundColor = "#f1c40f";
+    btn.style.color = "#333";
+    const controlsDiv = document.getElementById('habitControls');
+    if(controlsDiv) controlsDiv.style.display = 'none';
+    saveNamesToFirebase(habits);
+}
 
 function updateStats(day) {
     const dayCells = document.querySelectorAll(`.check-cell[data-d="${day}"].completed`);
     const count = dayCells.length;
-    
-    // تحديث الرقم
     const countCell = document.getElementById(`count-${day}`);
-    if(countCell) countCell.innerText = count;
+    if(countCell) countCell.innerText = `${count}/${habits.length}`;
 
-    // تحديث النقطة النشطة
     document.querySelectorAll(`[id^="perf-"][id$="-${day}"]`).forEach(el => el.classList.remove('active'));
-
-    // نحدد النسبة
+    
+    const totalHabits = habits.length;
     let pctClass = 0;
-    if (count === 7) pctClass = 100;
-    else if (count === 6) pctClass = 85;
-    else if (count === 5) pctClass = 70;
-    else if (count === 4) pctClass = 55;
-    else if (count === 3) pctClass = 40;
-    else if (count === 2) pctClass = 25;
-    else if (count === 1) pctClass = 10;
+    const percentage = Math.round((count / totalHabits) * 100);
+
+    if (percentage >= 100) pctClass = 100;
+    else if (percentage >= 85) pctClass = 85;
+    else if (percentage >= 70) pctClass = 70;
+    else if (percentage >= 55) pctClass = 55;
+    else if (percentage >= 40) pctClass = 40;
+    else if (percentage >= 25) pctClass = 25;
+    else if (percentage > 0) pctClass = 10;
     
     const dotCell = document.getElementById(`perf-${pctClass}-${day}`);
     if (dotCell) dotCell.classList.add('active');
 }
 
-// 🎨 دالة رسم الخط
 function drawChart() {
     const svg = document.getElementById('chartSvg');
     const container = document.querySelector('.chart-container');
-    
     if(!svg || !container) return;
-
     svg.innerHTML = ''; 
     let points = [];
-
-    for (let d = 1; d <= totalDays; d++) {
+    const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+    for (let d = 1; d <= daysInMonth; d++) {
         const activeCell = container.querySelector(`.perf-cell[id$="-${d}"].active`);
         if (activeCell) {
             const dot = activeCell.querySelector('.perf-dot');
@@ -337,11 +426,26 @@ function drawChart() {
             }
         }
     }
-
     if (points.length > 1) {
         const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
         polyline.setAttribute("points", points.join(" "));
         polyline.setAttribute("class", "chart-line");
         svg.appendChild(polyline);
+    }
+}
+
+// 🔥 دوال كارت البروفايل (Popup) 🔥
+window.openProfileModal = function() {
+    const modal = document.getElementById('profileModal');
+    modal.style.display = "block";
+}
+window.closeProfileModal = function() {
+    const modal = document.getElementById('profileModal');
+    modal.style.display = "none";
+}
+window.onclick = function(event) {
+    const modal = document.getElementById('profileModal');
+    if (event.target == modal) {
+        modal.style.display = "none";
     }
 }
