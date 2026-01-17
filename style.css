@@ -5,10 +5,8 @@ body {
     margin: 0;
     padding: 20px;
     direction: ltr;
-    /* الجدول إنجليزي */
 }
 
-/* كلاس للإخفاء */
 .hidden {
     display: none;
 }
@@ -30,6 +28,36 @@ body {
     color: #2c3e50;
     font-size: 2.5rem;
     margin-bottom: 10px;
+}
+
+/* بروفايل المطور في الدخول */
+.dev-login-profile {
+    margin-bottom: 20px;
+}
+
+.login-dev-pic {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    border: 4px solid #3498db;
+    padding: 3px;
+    object-fit: cover;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    margin-bottom: 10px;
+}
+
+.login-dev-name {
+    margin: 5px 0 0 0;
+    color: #2c3e50;
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.login-dev-title {
+    margin: 0;
+    color: #7f8c8d;
+    font-size: 14px;
+    font-weight: normal;
 }
 
 /* --- الأزرار --- */
@@ -63,7 +91,25 @@ body {
     color: white;
 }
 
-/* --- شريط التحكم العلوي --- */
+.habit-control-btn {
+    margin: 0 5px;
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    color: white;
+}
+
+.btn-add {
+    background-color: #3498db;
+}
+
+.btn-remove {
+    background-color: #e74c3c;
+}
+
+/* --- شريط التحكم --- */
 .controls-bar {
     display: flex;
     justify-content: space-between;
@@ -75,61 +121,72 @@ body {
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
-.user-info {
-    display: flex;
-    align-items: center;
-    gap: 15px;
-}
-
-.user-info img {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    border: 2px solid #ddd;
-}
-
-.user-info span {
-    font-weight: bold;
-    color: #2c3e50;
-    font-size: 1.1rem;
-}
-
 .actions {
     display: flex;
     gap: 10px;
 }
 
-/* --- ورقة الجدول (A4) --- */
+/* --- الصفحة والجدول --- */
 .page-container {
     background: white;
     width: 297mm;
-    /* A4 Landscape width */
     min-height: 210mm;
     padding: 10mm;
     margin: 0 auto;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Header Styles */
-.header {
+/* الهيدر الجديد */
+.header-content {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    padding-bottom: 20px;
     margin-bottom: 20px;
-    border-bottom: 2px solid #333;
-    padding-bottom: 10px;
+    border-bottom: 2px dashed #eee;
 }
 
-.date-info {
-    display: flex;
-    gap: 20px;
-    font-family: monospace;
-    font-size: 1.2rem;
-}
-
-.year-month-labels {
+.title-section {
     text-align: right;
-    color: #666;
+}
+
+.title-section h1 {
+    margin: 0;
+    font-size: 24px;
+    color: #2c3e50;
+}
+
+.user-profile-section {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.profile-pic {
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    border: 3px solid #3498db;
+    padding: 2px;
+    object-fit: cover;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.welcome-text {
+    font-size: 11px;
+    color: #95a5a6;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.user-name-text {
+    font-weight: bold;
+    font-size: 16px;
+    color: #2c3e50;
 }
 
 .quote {
@@ -138,7 +195,7 @@ body {
     font-family: serif;
 }
 
-/* --- الجداول --- */
+/* الجداول */
 table {
     width: 100%;
     border-collapse: collapse;
@@ -153,7 +210,6 @@ td {
     font-size: 0.9rem;
 }
 
-/* Habits Column */
 .col-habit {
     width: 200px;
     text-align: left;
@@ -162,13 +218,12 @@ td {
     background: #f9f9f9;
 }
 
-/* Header Row */
 .row-header th {
     background: #eee;
     height: 40px;
 }
 
-/* Check Cells */
+/* الخلايا */
 .check-cell {
     cursor: pointer;
     transition: background 0.1s;
@@ -180,15 +235,32 @@ td {
 
 .check-cell.completed {
     background-color: #2ecc71;
-    /* لون الإنجاز الأخضر */
     position: relative;
 }
 
-/* علامة الصح */
 .check-cell.completed::after {
     content: '✔';
     color: white;
     font-size: 1.2rem;
+}
+
+.today-col {
+    background-color: #fff9c4 !important;
+    border: 2px solid #fbc02d !important;
+    font-weight: bold;
+}
+
+.check-cell.today-col.completed {
+    background-color: #2ecc71 !important;
+    border-color: #27ae60 !important;
+    color: white !important;
+}
+
+.future-cell {
+    background-color: #f5f5f5 !important;
+    cursor: not-allowed !important;
+    opacity: 0.6;
+    pointer-events: all;
 }
 
 .spacer-row td {
@@ -200,9 +272,10 @@ td {
     text-align: right;
 }
 
-/* --- الرسم البياني (Chart Overlay) --- */
+/* --- 🔥 الرسم البياني (تم التعديل للثبات) 🔥 --- */
 .chart-container {
     position: relative;
+    /* ضروري */
     width: 100%;
     margin-top: 10px;
 }
@@ -215,12 +288,13 @@ td {
     height: 100%;
     pointer-events: none;
     z-index: 10;
+    overflow: visible;
+    /* عشان الخط ميبقاش مقصوص */
 }
 
 .chart-line {
     fill: none;
     stroke: #3498db;
-    /* لون الخط أزرق */
     stroke-width: 3px;
     stroke-linejoin: round;
     stroke-linecap: round;
@@ -233,7 +307,6 @@ td {
     background: transparent;
 }
 
-/* خلايا الأداء */
 .perf-cell {
     position: relative;
     height: 25px;
@@ -254,76 +327,47 @@ td {
     transform: scale(1.5);
 }
 
-/* --- الطباعة --- */
-@media print {
-    body {
-        background: white;
-        padding: 0;
-    }
-
-    .login-container,
-    .controls-bar {
-        display: none !important;
-    }
-
-    .page-container {
-        box-shadow: none;
-        margin: 0;
-        width: 100%;
-    }
-}
-/* تحسينات الموبايل */
-@media screen and (max-width: 768px) {
-    .page-container {
-        width: 100% !important;
-        /* خلي العرض ياخد الشاشة كلها */
-        padding: 10px;
-        min-height: auto;
-    }
-
-    /* نخلي الجدول قابل للسحب يمين وشمال عشان الأيام كتير */
-    .table-scroll {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin-bottom: 20px;
-        border: 1px solid #ddd;
-    }
-
-    /* تصغير الخطوط شوية */
-    th,
-    td {
-        font-size: 11px;
-        padding: 2px;
-    }
-
-    .col-habit {
-        width: 120px;
-        /* تصغير عمود الأسماء */
-        font-size: 12px;
-    }
-
-    .header {
-        flex-direction: column;
-        /* ترتيب العنوان فوق بعض */
-        text-align: center;
-        gap: 10px;
-    }
-
-    .login-container {
-        margin-top: 5vh;
-        width: 90%;
-        padding: 20px;
-    }
-}
-/* --- تمييز يوم النهاردة --- */
-.today-col {
-    background-color: #fff9c4 !important;
-    /* لون أصفر فاتح */
-    border: 2px solid #fbc02d !important;
+/* --- الفوتر ونسبة الشهر --- */
+.month-score-card {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    padding: 15px 30px;
+    border-radius: 50px;
+    font-size: 18px;
     font-weight: bold;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    display: block;
+    width: fit-content;
+    margin: 20px auto;
+    text-align: center;
+    border: 2px solid white;
 }
 
-/* --- شكل رسالة التنبيه (Toast) --- */
+.footer-credit {
+    text-align: center;
+    padding: 20px;
+    margin-top: 30px;
+    color: #7f8c8d;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 14px;
+}
+
+.dev-name {
+    color: #2c3e50;
+    font-weight: bold;
+    text-decoration: none;
+    background: #ecf0f1;
+    padding: 2px 6px;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.dev-name:hover {
+    background: #3498db;
+    color: white;
+}
+
+/* --- التنبيهات والبوب اب --- */
 .toast {
     visibility: hidden;
     min-width: 250px;
@@ -347,255 +391,34 @@ td {
     visibility: visible;
     opacity: 1;
     bottom: 50px;
-    /* تطلع لفوق شوية لما تظهر */
-}
-/* --- 1. حل مشكلة علامة الصح في اليوم الأصفر --- */
-/* لما الخلية تكون "انهارده" وكمان "معمولة صح" */
-.check-cell.today-col.completed {
-    background-color: #2ecc71 !important;
-    /* الأخضر يغطي على الأصفر */
-    border-color: #27ae60 !important;
-    color: white !important;
 }
 
-/* --- 2. تنسيق بطاقة نسبة إنجاز الشهر --- */
-.month-score-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 10px 20px;
-    border-radius: 12px;
-    display: inline-block;
-    margin: 10px 0;
-    font-weight: bold;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-/* --- 3. أزرار إضافة وحذف العادات (هتظهر وقت التعديل) --- */
-.habit-control-btn {
-    margin: 0 5px;
-    padding: 5px 10px;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    font-weight: bold;
-    color: white;
-}
-
-.btn-add {
-    background-color: #3498db;
-}
-
-.btn-remove {
-    background-color: #e74c3c;
-}
-
-/* --- 4. تحسين شكل العداد (4/6) --- */
-tr[id="countRow"] td {
-    font-size: 13px;
-    font-weight: bold;
-    color: #555;
-}
-.month-score-card {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    color: white;
-    padding: 15px 30px;
-    /* كبرنا الحشو شوية */
-    border-radius: 50px;
-    /* خليناها مدورة أكتر */
-    font-size: 18px;
-    /* كبرنا الخط */
-    font-weight: bold;
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-
-    /* عشان تيجي في النص */
-    display: block;
-    width: fit-content;
-    margin: 20px auto;
-    /* 20 بيكسل من فوق وتحت، و auto من الجناب عشان تتوسطن */
-    text-align: center;
-    border: 2px solid white;
-    /* برواز أبيض شيك */
-}
-/* --- تنسيق الأيام المستقبلية (المقفولة) --- */
-.future-cell {
-    background-color: #f5f5f5 !important;
-    /* لون رمادي فاتح */
-    cursor: not-allowed !important;
-    /* شكل الماوس (ممنوع) */
-    opacity: 0.6;
-    /* شفافة شوية */
-    pointer-events: all;
-    /* عشان التنبيه يشتغل لما يدوس */
-}
-/* --- تنسيق الهيدر الجديد --- */
-.header-content {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-bottom: 20px;
-    margin-bottom: 20px;
-    border-bottom: 2px dashed #eee;
-    /* خط متقطع يفصل الهيدر */
-}
-
-.title-section {
-    text-align: right;
-    /* العنوان يمين */
-}
-
-.title-section h1 {
-    margin: 0;
-    font-size: 24px;
-    color: #2c3e50;
-}
-
-/* تنسيق البروفايل */
-.user-profile-section {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-}
-
-.profile-pic {
-    width: 55px;
-    height: 55px;
-    border-radius: 50%;
-    border: 3px solid #3498db;
-    /* برواز أزرق للصورة */
-    padding: 2px;
-    object-fit: cover;
-}
-
-.user-info {
-    display: flex;
-    flex-direction: column;
-}
-
-.welcome-text {
-    font-size: 11px;
-    color: #95a5a6;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-}
-
-.user-name-text {
-    font-weight: bold;
-    font-size: 16px;
-    color: #2c3e50;
-}
-
-/* تنسيق الفوتر (حقوق المطور) */
-.footer-credit {
-    text-align: center;
-    padding: 20px;
-    margin-top: 30px;
-    color: #7f8c8d;
-    font-family: 'Courier New', Courier, monospace;
-    /* خط يشبه الكود */
-    font-size: 14px;
-}
-
-.dev-name {
-    color: #2c3e50;
-    font-weight: bold;
-    text-decoration: none;
-    background: #ecf0f1;
-    padding: 2px 6px;
-    border-radius: 4px;
-    transition: 0.3s;
-}
-
-.dev-name:hover {
-    background: #3498db;
-    color: white;
-}
-
-/* للموبايل: رتبهم فوق بعض */
-@media screen and (max-width: 768px) {
-    .header-content {
-        flex-direction: row-reverse;
-        /* اعكس الترتيب في الموبايل */
-        justify-content: space-between;
-    }
-
-    .title-section h1 {
-        font-size: 18px;
-    }
-
-    .profile-pic {
-        width: 40px;
-        height: 40px;
-    }
-
-    .user-name-text {
-        font-size: 14px;
-    }
-}
-/* --- تنسيق بروفايل المطور في شاشة الدخول --- */
-.dev-login-profile {
-    margin-bottom: 20px;
-}
-
-.login-dev-pic {
-    width: 90px;
-    height: 90px;
-    border-radius: 50%;
-    /* بيخليها مدورة */
-    border: 4px solid #3498db;
-    /* برواز أزرق */
-    padding: 3px;
-    object-fit: cover;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
-    margin-bottom: 10px;
-}
-
-.login-dev-name {
-    margin: 5px 0 0 0;
-    color: #2c3e50;
-    font-size: 22px;
-    font-weight: bold;
-}
-
-.login-dev-title {
-    margin: 0;
-    color: #7f8c8d;
-    font-size: 14px;
-    font-weight: normal;
-}
-/* --- تصميم كارت التواصل (Popup Modal) --- */
 .modal {
     display: none;
-    /* مخفي في البداية */
     position: fixed;
     z-index: 2000;
-    /* فوق كل حاجة */
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
     background-color: rgba(0, 0, 0, 0.6);
-    /* خلفية سوداء شفافة */
     backdrop-filter: blur(5px);
-    /* نغبشة للخلفية */
     animation: fadeIn 0.3s;
 }
 
 .modal-content {
     background-color: #fff;
     margin: 15% auto;
-    /* توسيط عمودي وأفقي */
     padding: 30px;
     border-radius: 20px;
     width: 90%;
     max-width: 350px;
-    /* عرض الموبايل */
     text-align: center;
     position: relative;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
     animation: slideUp 0.3s;
 }
 
-/* تنسيق الصورة جوه الكارت */
 .modal-pic {
     width: 100px;
     height: 100px;
@@ -603,7 +426,6 @@ tr[id="countRow"] td {
     border: 4px solid #fff;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
     margin-top: -60px;
-    /* تطلع نصها برا الكارت */
     background: white;
 }
 
@@ -613,7 +435,6 @@ tr[id="countRow"] td {
     font-size: 14px;
 }
 
-/* زرار الغلق (X) */
 .close-btn {
     position: absolute;
     top: 10px;
@@ -628,7 +449,6 @@ tr[id="countRow"] td {
     color: #000;
 }
 
-/* أزرار السوشيال */
 .social-buttons {
     display: flex;
     flex-direction: column;
@@ -660,7 +480,6 @@ tr[id="countRow"] td {
     background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
 }
 
-/* حركات */
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -680,93 +499,122 @@ tr[id="countRow"] td {
         transform: translateY(0);
     }
 }
-/* =========================================
-   📱 تحسينات الموبايل (Mobile Responsiveness)
-   ========================================= */
 
+/* --- الموبايل (Fix Final V2) --- */
 @media screen and (max-width: 768px) {
-    
-    /* 1. تظبيط جسم الصفحة */
     body {
-        padding: 0;
-        margin: 0;
-        overflow-x: hidden; /* يمنع الصفحة كلها تتحرك يمين وشمال */
-    }
-
-    .app-container {
-        width: 100%;
-        padding: 5px;
-        overflow-x: hidden;
+        background-color: #2c3e50;
     }
 
     .page-container {
         width: 100% !important;
+        max-width: none !important;
         margin: 0 !important;
-        padding: 10px !important;
+        padding: 10px 0 !important;
         box-shadow: none;
         border-radius: 0;
+        overflow: visible;
+        min-height: 100vh;
     }
 
-    /* 2. تظبيط الهيدر والزراير (يترصوا تحت بعض) */
+    .header-content {
+        flex-direction: column-reverse;
+        text-align: center;
+        padding: 0 10px;
+    }
+
     .controls-bar .actions {
         flex-wrap: wrap;
+        justify-content: center;
         gap: 5px;
     }
-    
-    .header-content {
-        flex-direction: column-reverse; /* نخلي العنوان فوق والبروفايل تحته */
-        text-align: center;
-        gap: 15px;
-    }
 
-    .title-section {
-        text-align: center;
-        width: 100%;
-    }
-
-    .user-profile-section {
-        justify-content: center;
-        width: 100%;
-    }
-
-    /* 3. 🔥 سحر الجدول (أهم جزء) 🔥 */
+    /* توحيد الجداول */
     .table-wrapper {
         display: block;
         width: 100%;
-        overflow-x: auto; /* يسمح بالسحب الأفقي للجدول بس */
-        -webkit-overflow-scrolling: touch; /* نعومة السحب في الآيفون */
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
         margin-bottom: 20px;
-        border: 1px solid #eee;
-        border-radius: 8px;
+        padding-bottom: 5px;
     }
 
     table {
-        width: max-content; /* الجدول ياخد راحته في العرض */
-        min-width: 100%;
+        table-layout: fixed;
+        /* السر هنا */
+        width: max-content;
+        border-collapse: separate;
+        border-spacing: 0;
     }
 
-    /* 4. تثبيت عمود "أسماء العادات" وأنت بتسحب (Sticky Column) */
-    .col-habit {
+    th,
+    td {
+        box-sizing: border-box;
+        width: 35px !important;
+        min-width: 35px !important;
+        max-width: 35px !important;
+        padding: 2px !important;
+        font-size: 10px;
+        overflow: hidden;
+    }
+
+    /* تثبيت العمود الأول */
+    .col-habit,
+    #trackerTable th:first-child,
+    #performanceTable th:first-child,
+    #countRow td:first-child,
+    #perfHeader th:first-child {
         position: sticky;
         left: 0;
         background-color: #fff;
-        z-index: 10;
-        border-right: 2px solid #ddd; /* خط يفصل الاسماء عن الأيام */
-        width: 110px; /* عرض ثابت للاسماء */
-        font-size: 12px;
-        padding: 5px;
-    }
-
-    /* تظبيط مربعات الأيام */
-    th, td {
-        padding: 4px;
+        z-index: 20;
+        border-right: 2px solid #ddd;
+        width: 100px !important;
+        min-width: 100px !important;
+        max-width: 100px !important;
+        white-space: normal;
         font-size: 11px;
-        min-width: 35px; /* عشان المربعات متبقاش لازقة */
     }
 
-    /* 5. تظبيط المودال (الكارت المنبثق) */
-    .modal-content {
-        width: 85%;
-        margin: 30% auto;
+    /* الرسم البياني على الموبايل */
+    .chart-container {
+        width: max-content;
+        min-width: 100%;
+    }
+
+    .perf-cell {
+        height: 25px;
+    }
+
+    .perf-dot {
+        margin: 0 auto;
+    }
+
+    .month-score-card {
+        width: 90%;
+        margin: 20px auto;
+        font-size: 14px;
+    }
+
+    .footer-credit {
+        padding-bottom: 80px;
+    }
+}
+
+@media print {
+    body {
+        background: white;
+        padding: 0;
+    }
+
+    .login-container,
+    .controls-bar {
+        display: none !important;
+    }
+
+    .page-container {
+        box-shadow: none;
+        margin: 0;
+        width: 100%;
     }
 }

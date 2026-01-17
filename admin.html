@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard 🔥</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            padding: 20px;
+            background: #f4f4f4;
+            direction: rtl;
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th,
+        td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+
+        img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .refresh-btn {
+            display: block;
+            width: 200px;
+            margin: 0 auto;
+            padding: 10px;
+            background: #27ae60;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>لوحة تحكم المدير 🕵️‍♂️</h1>
+        <button class="refresh-btn" onclick="location.reload()">تحديث البيانات 🔄</button>
+
+        <table id="usersTable">
+            <thead>
+                <tr>
+                    <th>الصورة</th>
+                    <th>الاسم</th>
+                    <th>الإيميل</th>
+                    <th>آخر ظهور</th>
+                    <th>عدد العادات</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <tr>
+                    <td colspan="5">جاري التحميل...</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+        import { getFirestore, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+        // نفس إعداداتك بالظبط
+        const firebaseConfig = {
+            apiKey: "AIzaSyA3Z9TUhNCqNR0PNosXLVT_TkTaZxIy-h8",
+            authDomain: "habit-tracker-2026-c5d50.firebaseapp.com",
+            projectId: "habit-tracker-2026-c5d50",
+            storageBucket: "habit-tracker-2026-c5d50.firebasestorage.app",
+            messagingSenderId: "424349537327",
+            appId: "1:424349537327:web:ee63fdb204fb97b43022da"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // حماية بسيطة (باسوورد عشان مش أي حد يدخل)
+        const password = prompt("دخل كلمة سر الأدمن يا هندسة:");
+
+        if (password === "ahmed123") { // غير الباسوورد براحتك
+            fetchUsers();
+        } else {
+            document.body.innerHTML = "<h1 style='text-align:center; color:red; margin-top:50px;'>وصول مرفوض! 🚫</h1>";
+        }
+
+        async function fetchUsers() {
+            const tbody = document.getElementById('tableBody');
+            tbody.innerHTML = ""; // فضي الجدول
+
+            try {
+                // هات كل المستخدمين من الداتابيز
+                const querySnapshot = await getDocs(collection(db, "users"));
+
+                querySnapshot.forEach((doc) => {
+                    const data = doc.data();
+
+                    // تحويل التاريخ لصيغة مقروءة
+                    let lastSeen = "غير معروف";
+                    if (data.lastLogin) {
+                        lastSeen = new Date(data.lastLogin.seconds * 1000).toLocaleDateString('ar-EG');
+                    }
+
+                    // عدد العادات المسجلة
+                    const habitsCount = data.habitNames ? data.habitNames.length : 7; // الافتراضي 7
+
+                    const row = `
+                        <tr>
+                            <td><img src="${data.photoURL || 'https://via.placeholder.com/40'}" alt="pic"></td>
+                            <td>${data.displayName || 'بدون اسم'}</td>
+                            <td>${data.email || '---'}</td>
+                            <td>${lastSeen}</td>
+                            <td>${habitsCount} عادة</td>
+                        </tr>
+                    `;
+                    tbody.innerHTML += row;
+                });
+            } catch (error) {
+                console.error("Error:", error);
+                tbody.innerHTML = `<tr><td colspan="5" style="color:red">حصل مشكلة في جلب البيانات (تأكد من الـ Rules)</td></tr>`;
+            }
+        }
+    </script>
+</body>
+
+</html>

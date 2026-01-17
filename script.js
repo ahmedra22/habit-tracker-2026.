@@ -17,7 +17,7 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const provider = new GoogleAuthProvider();
 
-// --- 🔥 1. قائمة التحفيز العشوائية (8 جمل نار) 🔥 ---
+// --- 🔥 جمل التحفيز 🔥 ---
 const motivationQuotes = [
     "عاش يا وحش! خطوة كمان ناحية حلمك 🚀",
     "الله عليك! هو ده الالتزام اللي بيصنع المعجزات 💪",
@@ -68,6 +68,10 @@ if(monthSelector) {
 onAuthStateChanged(auth, (user) => {
     if (user) {
         currentUser = user;
+        
+        // 🔥🔥 هام جداً: حفظ بيانات المستخدم عشان لوحة التحكم 🔥🔥
+        saveUserProfile(user);
+
         if(loginScreen) loginScreen.style.display = 'none';
         if(appContainer) {
              appContainer.style.display = 'block';
@@ -75,12 +79,9 @@ onAuthStateChanged(auth, (user) => {
         }
         if(document.getElementById('userPhoto')) document.getElementById('userPhoto').src = user.photoURL;
         
-        // جلب الاسم الأول
         const firstName = user.displayName ? user.displayName.split(' ')[0] : 'User';
         if(document.getElementById('userName')) document.getElementById('userName').textContent = firstName;
         
-        // --- 🔥 2. رسالة الترحيب عند الدخول 🔥 ---
-        // بنعمل Timeout صغير عشان تظهر بعد ما الموقع يحمل
         setTimeout(() => {
             showToast(`نورت بيتك يا ${firstName}.. يلا نكسر الدنيا! 👋🚀`);
         }, 1500);
@@ -95,12 +96,10 @@ onAuthStateChanged(auth, (user) => {
 });
 
 // --- الدوال الأساسية ---
-
-// دالة التنبيه (Toast)
 function showToast(message) {
     toastElement.textContent = message;
     toastElement.className = "toast show";
-    setTimeout(() => toastElement.className = toastElement.className.replace("show", ""), 4000); // خليتها 4 ثواني عشان يلحق يقرأ
+    setTimeout(() => toastElement.className = toastElement.className.replace("show", ""), 4000);
 }
 
 function updateDateHeader() {
@@ -172,15 +171,11 @@ function buildTableStructure() {
                 td.addEventListener('click', function() {
                     if(editHabitsBtn && editHabitsBtn.textContent.includes("حفظ")) return;
 
-                    // لو اليوم عدى ولسه بيعلم عليه (تشجيع خفيف)
                     if (!this.classList.contains('completed') && !isToday(d)) {
                          showToast("اليوم ده عدى، بس ولا يهمك! العوض في الجاي 💪");
                     }
 
-                    // --- 🔥 3. اللوجيك الجديد: تحفيز عند إنجاز اليوم الحالي 🔥 ---
-                    // الشرط: يكون يوم النهاردة + يكون بيعلم صح (مش بيشيل العلامة)
                     if (!this.classList.contains('completed') && isToday(d)) {
-                        // اختيار جملة عشوائية من الـ 8 جمل
                         const randomIndex = Math.floor(Math.random() * motivationQuotes.length);
                         const randomQuote = motivationQuotes[randomIndex];
                         showToast(randomQuote);
@@ -229,9 +224,7 @@ function listenToDatabase() {
         if (docSnapshot.exists()) {
             const data = docSnapshot.data();
             if (data.habitNames && data.habitNames.length > 0) habits = data.habitNames;
-            
             buildTableStructure();
-            
             const monthKey = `habits_m_${currentMonth}`;
             const currentMonthChecks = data[monthKey] || [];
             applyDataToUI(currentMonthChecks);
@@ -243,7 +236,6 @@ function listenToDatabase() {
 
 function applyDataToUI(savedHabits) {
     document.querySelectorAll('.check-cell').forEach(cell => cell.classList.remove('completed'));
-    
     savedHabits.forEach(id => {
         const [h, d] = id.split('-');
         if (h < habits.length) {
@@ -258,7 +250,7 @@ function applyDataToUI(savedHabits) {
     }
     
     calculateMonthlyScore(savedHabits.length);
-    setTimeout(drawChart, 50);
+    setTimeout(drawChart, 100);
 }
 
 function calculateMonthlyScore(totalChecks) {
@@ -297,6 +289,21 @@ async function saveNamesToFirebase(newNames) {
     try {
         await setDoc(doc(db, "users", currentUser.uid), { habitNames: newNames }, { merge: true });
     } catch (error) { console.error("Save names error:", error); }
+}
+
+// 🔥 دالة حفظ بيانات المستخدم (الجديدة) 🔥
+async function saveUserProfile(user) {
+    try {
+        // بنعمل merge: true عشان منمسحش العادات، بنزود بس البيانات الشخصية
+        await setDoc(doc(db, "users", user.uid), {
+            displayName: user.displayName,
+            email: user.email,
+            photoURL: user.photoURL,
+            lastLogin: new Date()
+        }, { merge: true });
+    } catch (e) {
+        console.error("Error saving profile:", e);
+    }
 }
 
 // دوال التعديل
@@ -355,10 +362,8 @@ function startEditing(btn) {
         tr.innerHTML = `<td class="col-habit"><input type="text" class="habit-input" value="${habit}" style="width: 90%; padding: 5px;"></td>`;
         for(let d=1; d<=1; d++) { 
              let td = document.createElement('td'); 
-             td.colSpan = 31; 
-             td.style.background = "#f0f0f0";
-             td.innerText = " (اضغط حفظ لتفعيل الجدول) ";
-             tr.appendChild(td);
+             td.colSpan = 31; td.style.background = "#f0f0f0";
+             td.innerText = " (اضغط حفظ لتفعيل الجدول) "; tr.appendChild(td);
         }
         tbody.appendChild(tr);
     });
@@ -404,32 +409,45 @@ function updateStats(day) {
     if (dotCell) dotCell.classList.add('active');
 }
 
+// 🔥 دالة الرسم المصححة للموبايل 🔥
 function drawChart() {
     const svg = document.getElementById('chartSvg');
     const container = document.querySelector('.chart-container');
-    if(!svg || !container) return;
+    const table = document.getElementById('performanceTable');
+    
+    if(!svg || !container || !table) return;
+
     svg.innerHTML = ''; 
     let points = [];
+    
+    // ⚠️ أهم خطوة للموبايل: مساواة أبعاد SVG بأبعاد الجدول الكاملة
+    const tableWidth = table.offsetWidth;
+    const tableHeight = table.offsetHeight;
+    
+    svg.setAttribute('width', tableWidth);
+    svg.setAttribute('height', tableHeight);
+    svg.style.width = `${tableWidth}px`;
+    svg.style.height = `${tableHeight}px`;
+
     const daysInMonth = new Date(year, currentMonth + 1, 0).getDate();
+
     for (let d = 1; d <= daysInMonth; d++) {
         const activeCell = container.querySelector(`.perf-cell[id$="-${d}"].active`);
         if (activeCell) {
-            const dot = activeCell.querySelector('.perf-dot');
-            if (dot) {
-                const dotRect = dot.getBoundingClientRect();
-                const svgRect = svg.getBoundingClientRect();
-                if (dotRect.width > 0 && svgRect.width > 0) {
-                    const x = dotRect.left - svgRect.left + (dotRect.width / 2);
-                    const y = dotRect.top - svgRect.top + (dotRect.height / 2);
-                    points.push(`${x},${y}`);
-                }
-            }
+            // استخدام Offset بدلاً من ClientRect
+            const x = activeCell.offsetLeft + (activeCell.offsetWidth / 2);
+            const y = activeCell.offsetTop + (activeCell.offsetHeight / 2);
+            points.push(`${x},${y}`);
         }
     }
+
     if (points.length > 1) {
         const polyline = document.createElementNS("http://www.w3.org/2000/svg", "polyline");
         polyline.setAttribute("points", points.join(" "));
         polyline.setAttribute("class", "chart-line");
+        polyline.style.fill = "none";
+        polyline.style.stroke = "#3498db"; 
+        polyline.style.strokeWidth = "2";
         svg.appendChild(polyline);
     }
 }
