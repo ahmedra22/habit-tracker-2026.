@@ -618,3 +618,93 @@ td {
         width: 100%;
     }
 }
+/* =========================================
+   🌙 الوضع الليلي (Dark Mode)
+   ========================================= */
+
+body.dark-mode {
+    background-color: #121212;
+    color: #e0e0e0;
+}
+
+body.dark-mode .login-container,
+body.dark-mode .page-container,
+body.dark-mode .controls-bar,
+body.dark-mode .header-content {
+    background-color: #1e1e1e;
+    color: #ffffff;
+    border-bottom-color: #333;
+    /* خطوط الفواصل */
+    box-shadow: none;
+}
+
+/* تعديل ألوان النصوص في الدارك مود */
+body.dark-mode h1,
+body.dark-mode .user-name-text,
+body.dark-mode .title-section h1 {
+    color: #ffffff;
+}
+
+body.dark-mode .year-month-values {
+    color: #aaa;
+}
+
+/* الجداول في الدارك مود */
+body.dark-mode th {
+    background-color: #2c2c2c;
+    color: #fff;
+    border-color: #444;
+}
+
+body.dark-mode td {
+    border-color: #444;
+    color: #eee;
+}
+
+body.dark-mode .col-habit {
+    background-color: #252525;
+    color: #fff;
+    border-right-color: #444;
+}
+
+/* الأعمدة الثابتة في الموبايل */
+body.dark-mode .col-habit,
+body.dark-mode #trackerTable th:first-child,
+body.dark-mode #performanceTable th:first-child,
+body.dark-mode #countRow td:first-child {
+    background-color: #252525;
+    /* لازم نفس لون الخلفية عشان متشفش اللي تحتها */
+}
+
+/* الخلايا الفاضية والمستقبلية */
+body.dark-mode .future-cell {
+    background-color: #333 !important;
+    opacity: 0.5;
+}
+
+body.dark-mode .check-cell:hover {
+    background-color: #333;
+}
+
+/* إصلاحات الكروت والفوتر */
+body.dark-mode .footer-credit .dev-name {
+    background-color: #333;
+    color: #fff;
+}
+
+body.dark-mode .month-score-card {
+    border: 2px solid #444;
+}
+
+/* ألوان المدخلات (Inputs) وقت التعديل */
+body.dark-mode input[type="text"] {
+    background-color: #333;
+    color: white;
+    border: 1px solid #555;
+}
+
+/* زرار التبديل نفسه */
+body.dark-mode #themeToggleBtn {
+    background-color: #f1c40f !important;
+    color: #000 !important;
+}

@@ -49,11 +49,16 @@ let currentMonth = new Date().getMonth();
 const monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
 const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
 
+// ... (الكود اللي فوق زي ما هو)
+
+// 👇 التعديل هنا: خليناهم 3 عادات افتراضية بس 👇
 let habits = [
-    "🕌 الصلاة في وقتها", "📖 ورد القرآن", "💻 تعلم JavaScript",
-    "🗣️ ممارسة English", "⚖️ مذاكرة الكلية", "🏋️ الجيم / رياضة", "🚫 تشتت وسوشيال"
+    "عادة 1", 
+    "عادة 2", 
+    "عادة 3"
 ];
 
+// ... (باقي الكود زي ما هو)
 // --- العناصر ---
 const loginScreen = document.getElementById('loginScreen');
 const appContainer = document.getElementById('appContainer');
@@ -478,5 +483,83 @@ window.onclick = function(event) {
     const modal = document.getElementById('profileModal');
     if (event.target == modal) {
         modal.style.display = "none";
+    }
+}
+// ==========================================
+// 🌙 منطق الوضع الليلي (Dark Mode Logic)
+// ==========================================
+
+const themeToggleBtn = document.getElementById('themeToggleBtn');
+const body = document.body;
+
+// 1. التحقق من التفضيل المحفوظ عند التحميل
+const savedTheme = localStorage.getItem('theme');
+if (savedTheme === 'dark') {
+    body.classList.add('dark-mode');
+    if(themeToggleBtn) themeToggleBtn.textContent = '☀️'; // أيقونة الشمس
+}
+
+// 2. تفعيل الزرار
+if(themeToggleBtn) {
+    themeToggleBtn.addEventListener('click', () => {
+        body.classList.toggle('dark-mode');
+        
+        if (body.classList.contains('dark-mode')) {
+            localStorage.setItem('theme', 'dark');
+            themeToggleBtn.textContent = '☀️';
+        } else {
+            localStorage.setItem('theme', 'light');
+            themeToggleBtn.textContent = '🌙';
+        }
+    });
+}
+
+
+// ==========================================
+// 🔔 نظام الإشعارات الذكي (Reminders)
+// ==========================================
+
+// 1. طلب الإذن أول ما الموقع يفتح (أو ممكن نربطها بزرار)
+if ("Notification" in window) {
+    if (Notification.permission !== "granted" && Notification.permission !== "denied") {
+        Notification.requestPermission().then(permission => {
+            if (permission === "granted") {
+                showToast("تم تفعيل الإشعارات بنجاح! 🔔");
+                // إشعار تجريبي
+                new Notification("Habit Tracker 2026", {
+                    body: "أهلاً بيك يا بطل! هنفكرك كل يوم بعاداتك 😉",
+                    icon: "icon-192.png" // تأكد إن فيه صورة أيقونة
+                });
+            }
+        });
+    }
+}
+
+// 2. دالة التحقق من الوقت (Check Time)
+// دي هتشتغل كل دقيقة تشوف الساعة كام
+setInterval(() => {
+    const now = new Date();
+    const hours = now.getHours();
+    const minutes = now.getMinutes();
+
+    // نحدد وقت التذكير (مثلاً الساعة 8:00 مساءً)
+    const reminderHour = 20; // 20 يعني 8 بليل
+    const reminderMinute = 0;
+
+    if (hours === reminderHour && minutes === reminderMinute) {
+        sendDailyReminder();
+    }
+}, 60000); // كل 60000 مللي ثانية (دقيقة)
+
+function sendDailyReminder() {
+    // نتأكد إن الإذن موجود
+    if (Notification.permission === "granted") {
+        // ممكن هنا نضيف شرط: لو لسه مخلصش كل العادات ابعتله
+        // بس للتبسيط هنبعت تذكير عام
+        new Notification("تذكير العادات 📅", {
+            body: "يومك قرب يخلص! خلصت عادات النهاردة ولا لسه؟ 💪",
+            icon: "icon-192.png",
+            vibrate: [200, 100, 200]
+        });
     }
 }
